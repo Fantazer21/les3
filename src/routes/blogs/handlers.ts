@@ -31,10 +31,10 @@ export const getBlogById = (req: any, res: any) => {
 export const createBlog = (req: Request<{}, {}, BlogInputModel>, res: Response) => {
   const { name, description, websiteUrl } = req.body;
 
-  const newBlog: BlogViewModel = {
+  const newBlog = {
+    description,
     id: (blogs.length + 1).toString(),
     name,
-    description,
     websiteUrl,
   };
 
