@@ -70,7 +70,7 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
   blogs.push(newBlog);
 
   res.status(201).json({
-    data: newBlog,
+    ...newBlog,
     status: 200,
   });
 };
