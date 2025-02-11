@@ -70,7 +70,6 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
 
   res.status(201).json({
     ...newBlog,
-    status: 201,
   });
 };
 
