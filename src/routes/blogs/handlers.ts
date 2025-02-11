@@ -26,12 +26,10 @@ export const getBlogById = (req: any, res: any) => {
     });
   }
 
-  const response: ApiResponse<BlogViewModel> = {
-    status: 200,
+  res.status(200).json({
     data: blog,
-  };
-
-  res.json(response);
+    status: 200,
+  });
 };
 
 export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | ErrorResponse>) => {
@@ -49,7 +47,7 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
     });
   }
 
-  if (!name || typeof name !== "string" || name.length > 15) {
+  if (!name || typeof name !== 'string' || name.length > 15) {
     errors.errorsMessages.push({
       message: 'Invalid name length',
       field: 'name',
@@ -74,7 +72,6 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
     status: 200,
   });
 };
-
 
 export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
