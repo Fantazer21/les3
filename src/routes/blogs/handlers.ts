@@ -4,15 +4,8 @@ import { blogsData } from '../../mocks/blogs.mock';
 
 const blogs: BlogViewModel[] = blogsData;
 
-export const getBlogs = (_req: Request, res: Response<ApiResponse<BlogsResponse>>) => {
-  const response: ApiResponse<BlogsResponse> = {
-    status: 200,
-    data: {
-      items: blogs,
-      totalCount: blogs.length,
-    },
-  };
-  res.json(response);
+export const getBlogs = (_req: Request, res: Response) => {
+  res.status(200).json(blogs);
 };
 
 // TODO: add tipization
