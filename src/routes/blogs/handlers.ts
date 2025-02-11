@@ -21,15 +21,16 @@ export const getBlogById = (req: any, res: any) => {
 
   if (!blog) {
     return res.status(404).json({
-      status: 404,
-      error: 'Blog not found',
+      errorsMessages: [
+        {
+          message: 'Blog not found',
+          field: 'id',
+        },
+      ],
     });
   }
 
-  res.status(200).json({
-    data: blog,
-    status: 200,
-  });
+  res.status(200).json(blog);
 };
 
 export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | ErrorResponse>) => {
