@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
-import { BlogViewModel, ApiResponse, BlogsResponse, BlogInputModel } from '../../types';
+import {
+  BlogViewModel,
+  ApiResponse,
+  BlogsResponse,
+  BlogInputModel,
+  ErrorResponse,
+} from '../../types';
 import { blogsData } from '../../mocks/blogs.mock';
 
 const blogs: BlogViewModel[] = blogsData;
@@ -28,7 +34,7 @@ export const getBlogById = (req: any, res: any) => {
   res.json(response);
 };
 
-export const createBlog = (req: Request<{}, {}, BlogInputModel>, res: Response) => {
+export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | ErrorResponse>) => {
   const { name, description, websiteUrl } = req.body;
 
   const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
