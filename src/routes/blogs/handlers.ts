@@ -30,7 +30,7 @@ export const getBlogById = (req: any, res: any) => {
     });
   }
 
-  res.status(200).json(blog);
+  res.status(204).json(blog);
 };
 
 export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | ErrorResponse>) => {
