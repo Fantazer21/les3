@@ -1,6 +1,6 @@
 export enum ApiPaths {
-  Blogs = '/ht_02/api/blogs',
-  BlogById = '/ht_02/api/blogs/:id',
+  Blogs = '/blogs',
+  BlogById = '/blogs/:id',
   Videos = '/videos',
   TestingAllData = '/testing/all-data',
 }
