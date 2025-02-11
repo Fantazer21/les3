@@ -28,11 +28,31 @@ export const getBlogById = (req: any, res: any) => {
   res.json(response);
 };
 
-export const createBlog = (
-  req: Request<{}, {}, BlogInputModel>,
-  res: Response<{ data: BlogViewModel; status: number }>,
-) => {
+export const createBlog = (req: Request<{}, {}, BlogInputModel>, res: Response) => {
   const { name, description, websiteUrl } = req.body;
+
+  const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
+  const errors = {
+    errorsMessages: [] as { message: string; field: string }[],
+  };
+
+  if (!urlPattern.test(websiteUrl)) {
+    errors.errorsMessages.push({
+      message: 'Invalid url format',
+      field: 'websiteUrl',
+    });
+  }
+
+  if (!name || name.length > 15) {
+    errors.errorsMessages.push({
+      message: 'Invalid name length',
+      field: 'name',
+    });
+  }
+
+  if (errors.errorsMessages.length) {
+    return res.status(400).json(errors);
+  }
 
   const newBlog = {
     description,
