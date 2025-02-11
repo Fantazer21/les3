@@ -68,9 +68,7 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
 
   blogs.push(newBlog);
 
-  res.status(201).json({
-    ...newBlog,
-  });
+  res.status(201).json({ ...newBlog });
 };
 
 export const updateBlog = (req: any, res: any) => {
