@@ -28,10 +28,7 @@ export const getBlogById = (req: any, res: any) => {
   res.json(response);
 };
 
-export const createBlog = (
-  req: Request<{}, {}, BlogInputModel>,
-  res: Response<ApiResponse<BlogViewModel>>,
-) => {
+export const createBlog = (req: Request<{}, {}, BlogInputModel>, res: Response) => {
   const { name, description, websiteUrl } = req.body;
 
   const newBlog: BlogViewModel = {
@@ -43,12 +40,7 @@ export const createBlog = (
 
   blogs.push(newBlog);
 
-  const response: ApiResponse<BlogViewModel> = {
-    status: 201,
-    data: newBlog,
-  };
-
-  res.status(201).json(response);
+  res.status(201).json(newBlog);
 };
 
 export const updateBlog = (req: any, res: any) => {
