@@ -49,7 +49,7 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
     });
   }
 
-  if (!name || name.length > 15) {
+  if (!name || typeof name !== "string" || name.length > 15) {
     errors.errorsMessages.push({
       message: 'Invalid name length',
       field: 'name',
@@ -74,6 +74,7 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
     status: 200,
   });
 };
+
 
 export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
