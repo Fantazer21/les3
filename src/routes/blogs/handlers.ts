@@ -42,9 +42,9 @@ export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | 
     errorsMessages: [] as { message: string; field: string }[],
   };
 
-  if (!urlPattern.test(websiteUrl)) {
+  if (!urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
     errors.errorsMessages.push({
-      message: 'Invalid url format',
+      message: 'Invalid url format or length',
       field: 'websiteUrl',
     });
   }
