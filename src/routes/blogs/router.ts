@@ -1,11 +1,11 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { getBlogs, createBlog, getBlogById, updateBlog, deleteBlog } from './handlers';
 import { ApiPaths } from '../paths';
 
 export const blogsRouter = Router();
 
 blogsRouter.get(ApiPaths.Blogs, getBlogs);
-blogsRouter.post(ApiPaths.Blogs, createBlog);
+blogsRouter.post(ApiPaths.Blogs, createBlog as RequestHandler);
 blogsRouter.get(ApiPaths.BlogById, getBlogById);
 blogsRouter.put(ApiPaths.BlogById, updateBlog);
 blogsRouter.delete(ApiPaths.BlogById, deleteBlog);

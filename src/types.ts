@@ -70,3 +70,7 @@ export interface BlogsResponse {
   items: BlogViewModel[];
   totalCount: number;
 }
+
+export interface ErrorResponse {
+  errorsMessages: { message: string; field: string }[];
+}
