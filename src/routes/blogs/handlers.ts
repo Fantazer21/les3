@@ -30,7 +30,7 @@ export const getBlogById = (req: any, res: any) => {
 export const createBlog = (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
-  const checkToken = `Basic ${btoa('admin:qwerty')}`
+  const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
@@ -41,17 +41,17 @@ export const createBlog = (req: any, res: any) => {
     errorsMessages: [] as { message: string; field: string }[],
   };
 
-  if (!urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
-    errors.errorsMessages.push({
-      message: 'Invalid url format or length',
-      field: 'websiteUrl',
-    });
-  }
-
-  if (!name || typeof name !== 'string' || name.length > 15) {
+  if (!name || name === '' || typeof name !== 'string' || name.length > 15) {
     errors.errorsMessages.push({
       message: 'Invalid name length',
       field: 'name',
+    });
+  }
+
+  if (!websiteUrl || websiteUrl === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
+    errors.errorsMessages.push({
+      message: 'Invalid url format or length',
+      field: 'websiteUrl',
     });
   }
 
@@ -68,14 +68,14 @@ export const createBlog = (req: any, res: any) => {
 
   blogs.push(newBlog);
 
-  res.status(201).json({ ...newBlog });
+  res.status(201).json(newBlog);
 };
 
 export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
-  const checkToken = `Basic ${btoa('admin:qwerty')}`
+  const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
@@ -110,7 +110,7 @@ export const updateBlog = (req: any, res: any) => {
 export const deleteBlog = (req: any, res: any) => {
   const { id } = req.params;
 
-  const checkToken = `Basic ${btoa('admin:qwerty')}`
+  const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
