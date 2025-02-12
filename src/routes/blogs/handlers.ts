@@ -69,6 +69,10 @@ export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
+  if (!req.headers || !req.headers.authorization) {
+    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+  }
+
   const blogIndex = blogs.findIndex(b => b.id === id);
 
   if (blogIndex === -1) {
