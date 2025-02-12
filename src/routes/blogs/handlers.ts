@@ -30,6 +30,10 @@ export const getBlogById = (req: any, res: any) => {
 export const createBlog = (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
+  if (!req.headers) {
+    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+  }
+
   const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
   const errors = {
     errorsMessages: [] as { message: string; field: string }[],
@@ -70,8 +74,6 @@ export const updateBlog = (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`
-
-  const token = btoa(`${req.headers.authorization}`)
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
