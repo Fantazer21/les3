@@ -92,7 +92,7 @@ export const updateBlog = (req: any, res: any) => {
     data: updatedBlog,
   };
 
-  res.json(response);
+  res.sendStatus(204).json(response);
 };
 
 export const deleteBlog = (req: any, res: any) => {
