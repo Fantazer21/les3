@@ -4,11 +4,13 @@ import { blogsData } from '../../mocks/blogs.mock';
 
 const blogs: BlogViewModel[] = blogsData;
 
+const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
+
 export const getBlogs = (_req: Request, res: Response) => {
   res.status(200).json(blogs);
 };
 
-// TODO: add tipization
+// TODO: add TS
 
 export const getBlogById = (req: any, res: any) => {
   const blog = blogs.find(b => b.id === req.params.id);
@@ -36,7 +38,6 @@ export const createBlog = (req: any, res: any) => {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
   }
 
-  const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
   const errors = {
     errorsMessages: [] as { message: string; field: string }[],
   };
@@ -79,6 +80,24 @@ export const updateBlog = (req: any, res: any) => {
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
+  }
+
+  const errors = {
+    errorsMessages: [] as { message: string; field: string }[],
+  };
+
+  if (!name || name.trim() === '' || typeof name !== 'string' || name.trim().length > 15) {
+    errors.errorsMessages.push({
+      message: 'Invalid name length',
+      field: 'name',
+    });
+  }
+
+  if (!websiteUrl || websiteUrl.trim() === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
+    errors.errorsMessages.push({
+      message: 'Invalid url format or length',
+      field: 'websiteUrl',
+    });
   }
 
   const blogIndex = blogs.findIndex(b => b.id === id);
