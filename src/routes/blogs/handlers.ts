@@ -27,7 +27,7 @@ export const getBlogById = (req: any, res: any) => {
   res.status(200).json(blog);
 };
 
-export const createBlog = (req: any, res: Response<ApiResponse<BlogViewModel> | ErrorResponse>) => {
+export const createBlog = (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
   const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
@@ -88,7 +88,7 @@ export const updateBlog = (req: any, res: any) => {
   blogs[blogIndex] = updatedBlog;
 
   const response: ApiResponse<BlogViewModel> = {
-    status: 200,
+    status: 204,
     data: updatedBlog,
   };
 
