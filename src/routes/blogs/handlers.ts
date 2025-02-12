@@ -1,11 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  BlogViewModel,
-  ApiResponse,
-  BlogsResponse,
-  BlogInputModel,
-  ErrorResponse,
-} from '../../types';
+import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { blogsData } from '../../mocks/blogs.mock';
 
 const blogs: BlogViewModel[] = blogsData;
