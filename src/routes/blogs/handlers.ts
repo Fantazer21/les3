@@ -41,14 +41,14 @@ export const createBlog = (req: any, res: any) => {
     errorsMessages: [] as { message: string; field: string }[],
   };
 
-  if (!name || name === '' || typeof name !== 'string' || name.length > 15) {
+  if (!name || name.trim() === '' || typeof name !== 'string' || name.trim().length > 15) {
     errors.errorsMessages.push({
       message: 'Invalid name length',
       field: 'name',
     });
   }
 
-  if (!websiteUrl || websiteUrl === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
+  if (!websiteUrl || websiteUrl.trim() === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
     errors.errorsMessages.push({
       message: 'Invalid url format or length',
       field: 'websiteUrl',
