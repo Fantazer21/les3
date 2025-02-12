@@ -69,16 +69,26 @@ export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
-  if (!req.headers || !req.headers.authorization) {
-    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+  const auth = req.headers.authorization;
+
+  if (!auth) {
+    return res.sendStatus(401);
+  }
+
+  if (auth !== 'Basic admin:qwerty') {
+    return res.sendStatus(401);
   }
 
   const blogIndex = blogs.findIndex(b => b.id === id);
 
   if (blogIndex === -1) {
     return res.status(404).json({
-      status: 404,
-      error: 'Blog not found',
+      errorsMessages: [
+        {
+          message: 'Blog not found',
+          field: 'id',
+        },
+      ],
     });
   }
 
