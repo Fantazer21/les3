@@ -100,6 +100,10 @@ export const updateBlog = (req: any, res: any) => {
     });
   }
 
+  if (errors.errorsMessages.length) {
+    return res.status(400).json(errors);
+  }
+
   const blogIndex = blogs.findIndex(b => b.id === id);
 
   if (blogIndex === -1) {
