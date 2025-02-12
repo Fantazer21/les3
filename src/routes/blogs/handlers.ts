@@ -69,7 +69,7 @@ export const updateBlog = (req: any, res: any) => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
-  if (!req.headers || !req.headers.authorization || req.headers.authorization !== "Basic admin\\qwerty") {
+  if (!req.headers || !req.headers.authorization) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
   }
 
