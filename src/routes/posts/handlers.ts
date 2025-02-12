@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PostViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { postsData } from '../../mocks/posts.mock';
+import { blogsData } from '../../mocks/blogs.mock';
 
 const posts: PostViewModel[] = postsData;
 
@@ -59,9 +60,11 @@ export const createPost = (req: any, res: any) => {
     });
   }
 
-  if (!blogId || typeof blogId !== 'string') {
+  // Проверяем существование блога
+  const blog = blogsData.find(b => b.id === blogId);
+  if (!blog) {
     errors.errorsMessages.push({
-      message: 'Invalid blogId',
+      message: 'Blog not found',
       field: 'blogId',
     });
   }
@@ -76,7 +79,7 @@ export const createPost = (req: any, res: any) => {
     shortDescription,
     content,
     blogId,
-    blogName: 'Blog ' + blogId, // Здесь нужно будет получать реальное имя блога
+    blogName: blog?.name || 'Unknown Blog',
   };
 
   posts.push(newPost);
