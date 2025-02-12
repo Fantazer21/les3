@@ -60,7 +60,6 @@ export const createPost = (req: any, res: any) => {
     });
   }
 
-  // Проверяем существование блога
   const blog = blogsData.find(b => b.id === blogId);
   if (!blog) {
     errors.errorsMessages.push({
@@ -122,9 +121,10 @@ export const updatePost = (req: any, res: any) => {
     });
   }
 
-  if (!blogId || typeof blogId !== 'string') {
+  const blog = blogsData.find(b => b.id === blogId);
+  if (!blog) {
     errors.errorsMessages.push({
-      message: 'Invalid blogId',
+      message: 'Blog not found',
       field: 'blogId',
     });
   }
@@ -152,6 +152,7 @@ export const updatePost = (req: any, res: any) => {
     shortDescription,
     content,
     blogId,
+    blogName: blog?.name || 'Unknown Blog',
   };
 
   posts[postIndex] = updatedPost;
