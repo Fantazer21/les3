@@ -109,6 +109,13 @@ export const updateBlog = (req: any, res: any) => {
 
 export const deleteBlog = (req: any, res: any) => {
   const { id } = req.params;
+
+  const checkToken = `Basic ${btoa('admin:qwerty')}`
+
+  if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
+    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+  }
+
   const blogIndex = blogs.findIndex(b => b.id === id);
 
   if (blogIndex === -1) {
