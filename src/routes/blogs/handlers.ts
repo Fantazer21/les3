@@ -30,7 +30,7 @@ export const getBlogById = (req: any, res: any) => {
 export const createBlog = (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
-  if (!req.headers) {
+  if (!req.headers || !req.headers.authorization) {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
   }
 
