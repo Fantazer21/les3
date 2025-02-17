@@ -8,5 +8,17 @@ export const postsData: PostViewModel[] = [
     content: 'Content of first post',
     blogId: '1',
     blogName: "John's Blog",
+    createdAt: new Date().toISOString(),
+    isMembership: false,
+  },
+  {
+    id: '2',
+    title: 'Second Post',
+    shortDescription: 'Short description of second post',
+    content: 'Content of second post',
+    blogId: '2',
+    blogName: "Jane's Blog",
+    createdAt: new Date().toISOString(),
+    isMembership: false,
   },
 ];
