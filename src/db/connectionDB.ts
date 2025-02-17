@@ -48,8 +48,6 @@ export const runDb = async () => {
     const blogs = await collections.blogs.find({}).toArray();
 
     const posts = await collections.posts.find({}).toArray();
-    console.log('📊 Данные из коллекции blogs:', blogs);
-    console.log('📊 Данные из коллекции posts:', posts);
   } catch (error) {
     console.error('❌ Ошибка подключения к MongoDB:', error);
     process.exit(1);

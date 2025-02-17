@@ -2,11 +2,19 @@ import { Request, Response } from 'express';
 import { PostViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { postsData } from '../../mocks/posts.mock';
 import { blogsData } from '../../mocks/blogs.mock';
+import { collections } from '../../db/connectionDB';
 
 const posts: PostViewModel[] = postsData;
 
-export const getPosts = (_req: Request, res: Response) => {
-  res.status(200).json(posts);
+export const getPosts = async (_req: Request, res: Response) => {
+  try {
+    const posts = await collections.posts?.find({}, { projection: { _id: 0 } }).toArray();
+    console.log('📊 Полученные посты:', posts);
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error('❌ Ошибка при получении постов:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 export const getPostById = (req: any, res: any) => {
