@@ -18,6 +18,10 @@ export interface BlogViewModel {
   description: string;
   /** Blog website URL */
   websiteUrl: string;
+  /** Blog membership status */
+  isMembership: boolean;
+  /** Blog creation timestamp */
+  createdAt: string;
 }
 
 export interface PostInputModel {
