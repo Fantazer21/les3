@@ -80,6 +80,7 @@ export const createPost = (req: any, res: any) => {
     blogId,
     blogName: blog?.name || 'Unknown Blog',
     createdAt: new Date().toISOString(),
+    isMembership: false,
   };
 
   posts.push(newPost);

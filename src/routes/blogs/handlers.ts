@@ -49,7 +49,12 @@ export const createBlog = (req: any, res: any) => {
     });
   }
 
-  if (!websiteUrl || websiteUrl.trim() === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
+  if (
+    !websiteUrl ||
+    websiteUrl.trim() === '' ||
+    !urlPattern.test(websiteUrl) ||
+    websiteUrl.length > 100
+  ) {
     errors.errorsMessages.push({
       message: 'Invalid url format or length',
       field: 'websiteUrl',
@@ -65,6 +70,8 @@ export const createBlog = (req: any, res: any) => {
     id: (blogs.length + 1).toString(),
     name,
     websiteUrl,
+    isMembership: false,
+    createdAt: new Date().toISOString(),
   };
 
   blogs.push(newBlog);
@@ -93,7 +100,12 @@ export const updateBlog = (req: any, res: any) => {
     });
   }
 
-  if (!websiteUrl || websiteUrl.trim() === '' || !urlPattern.test(websiteUrl) || websiteUrl.length > 100) {
+  if (
+    !websiteUrl ||
+    websiteUrl.trim() === '' ||
+    !urlPattern.test(websiteUrl) ||
+    websiteUrl.length > 100
+  ) {
     errors.errorsMessages.push({
       message: 'Invalid url format or length',
       field: 'websiteUrl',
