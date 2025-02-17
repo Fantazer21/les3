@@ -52,6 +52,9 @@ export interface PostViewModel {
 
   /** Name of the blog this post belongs to */
   blogName: string;
+
+  /** Creation timestamp */
+  createdAt: string;
 }
 
 export interface ApiResponse<T = void> {
