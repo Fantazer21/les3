@@ -72,7 +72,7 @@ export const createPost = (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  const newPost = {
+  const newPost: PostViewModel = {
     id: (posts.length + 1).toString(),
     title,
     shortDescription,

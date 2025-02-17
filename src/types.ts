@@ -61,7 +61,7 @@ export interface PostViewModel {
   createdAt: string;
 
   /** Membership status */
-  isMembership: boolean;
+  isMembership?: boolean;
 }
 
 export interface ApiResponse<T = void> {
