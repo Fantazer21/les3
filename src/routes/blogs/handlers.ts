@@ -1,13 +1,20 @@
 import { Request, Response } from 'express';
 import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { blogsData } from '../../mocks/blogs.mock';
+import { collections } from '../../db/connectionDB';
 
 const blogs: BlogViewModel[] = blogsData;
 
 const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-export const getBlogs = (_req: Request, res: Response) => {
-  res.status(200).json(blogs);
+export const getBlogs = async (_req: Request, res: Response) => {
+  try {
+    const blogs = await collections.blogs?.find({}).toArray();
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error('❌ Ошибка при получении блогов:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 // TODO: add TS
