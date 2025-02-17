@@ -1,14 +1,20 @@
 import { MongoClient, ServerApiVersion, Collection } from 'mongodb';
 import { BlogViewModel, PostViewModel } from '../types';
+import * as dotenv from 'dotenv';
 
-const MONGO_URI =
-  'mongodb+srv://6967221:yGssUyRhCra4EIUF@cluster-lesson3.b6dqe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-lesson3';
+dotenv.config();
+
+const MONGO_URI = process.env.MONGO_URI;
 
 const DB_NAME = 'it-incubator';
 const COLLECTIONS = {
   posts: 'posts',
   blogs: 'blogs',
 } as const;
+
+if (!MONGO_URI) {
+  throw new Error('MONGO_URI is not defined');
+}
 
 const client = new MongoClient(MONGO_URI, {
   serverApi: {
