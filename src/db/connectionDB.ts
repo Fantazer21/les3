@@ -22,7 +22,3 @@ export const runDb = async () => {
         process.exit(1);
     }
 };
-
-export const logErr = () => {
-    console.log('dasdsadsa')
-}
