@@ -9,7 +9,7 @@ const posts: PostViewModel[] = postsData;
 export const getPosts = async (_req: Request, res: Response) => {
   try {
     const posts = await collections.posts?.find({}, { projection: { _id: 0 } }).toArray();
-    console.log('📊 Полученные посты:', posts);
+
     res.status(200).json(posts);
   } catch (error) {
     console.error('❌ Ошибка при получении постов:', error);
