@@ -1,11 +1,13 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion, Collection } from 'mongodb';
+import { BlogViewModel, PostViewModel } from '../types';
 
 const MONGO_URI =
   'mongodb+srv://6967221:yGssUyRhCra4EIUF@cluster-lesson3.b6dqe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-lesson3';
 
-const DB_NAME = 'sample_airbnb';
+const DB_NAME = 'it-incubator';
 const COLLECTIONS = {
-  listingsAndReviews: 'listingsAndReviews',
+  posts: 'posts',
+  blogs: 'blogs',
 } as const;
 
 const client = new MongoClient(MONGO_URI, {
@@ -17,9 +19,11 @@ const client = new MongoClient(MONGO_URI, {
 });
 
 export let collections: {
-  listingsAndReviews: any;
+  posts: Collection<PostViewModel> | null;
+  blogs: Collection<BlogViewModel> | null;
 } = {
-  listingsAndReviews: null,
+  posts: null,
+  blogs: null,
 };
 
 export const runDb = async () => {
@@ -27,14 +31,18 @@ export const runDb = async () => {
     await client.connect();
     const db = client.db(DB_NAME);
 
-    collections.listingsAndReviews = db.collection<any>(COLLECTIONS.listingsAndReviews);
+    collections.blogs = db.collection<BlogViewModel>(COLLECTIONS.blogs);
+
+    collections.posts = db.collection<PostViewModel>(COLLECTIONS.posts);
 
     await client.db('admin').command({ ping: 1 });
-
     console.log('✅ Успешное подключение к MongoDB!');
 
-    const data = await collections.listingsAndReviews.find().limit(10).toArray();
-    console.log('📊 Данные из коллекции listingsAndReviews:', data);
+    const blogs = await collections.blogs.find({}).toArray();
+
+    const posts = await collections.posts.find({}).toArray();
+    console.log('📊 Данные из коллекции blogs:', blogs);
+    console.log('📊 Данные из коллекции posts:', posts);
   } catch (error) {
     console.error('❌ Ошибка подключения к MongoDB:', error);
     process.exit(1);
