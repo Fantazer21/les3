@@ -59,6 +59,9 @@ export interface PostViewModel {
 
   /** Creation timestamp */
   createdAt: string;
+
+  /** Membership status */
+  isMembership: boolean;
 }
 
 export interface ApiResponse<T = void> {
