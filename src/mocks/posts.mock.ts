@@ -9,7 +9,6 @@ export const postsData: PostViewModel[] = [
     blogId: '1',
     blogName: "John's Blog",
     createdAt: new Date().toISOString(),
-    isMembership: false,
   },
   {
     id: '2',
@@ -19,6 +18,5 @@ export const postsData: PostViewModel[] = [
     blogId: '2',
     blogName: "Jane's Blog",
     createdAt: new Date().toISOString(),
-    isMembership: false,
   },
 ];
