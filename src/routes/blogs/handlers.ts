@@ -18,25 +18,21 @@ export const getBlogs = async (_req: Request, res: Response) => {
   }
 };
 
-export const getBlogById = async (req: any, res: any) => {
-    const blog = await collections.blogs?.findOne(
-      { id: req.params.id },
-      { projection: { _id: 0 } },
-    );
+export const getBlogById = (req: any, res: any) => {
+  const blog = blogs.find(b => b.id === req.params.id);
 
-    if (!blog) {
-      return res.status(404).json({
-        errorsMessages: [
-          {
-            message: 'Blog not found',
-            field: 'id',
-          },
-        ],
-      });
-    }
+  if (!blog) {
+    return res.status(404).json({
+      errorsMessages: [
+        {
+          message: 'Blog not found',
+          field: 'id',
+        },
+      ],
+    });
+  }
 
-    res.status(200).json(blog);
-
+  res.status(200).json(blog);
 };
 
 export const createBlog = (req: any, res: any) => {

@@ -17,29 +17,21 @@ export const getPosts = async (_req: Request, res: Response) => {
   }
 };
 
-export const getPostById = async (req: any, res: any) => {
-  try {
-    const post = await collections.posts?.findOne(
-      { id: req.params.id },
-      { projection: { _id: 0 } },
-    );
+export const getPostById = (req: any, res: any) => {
+  const post = posts.find(p => p.id === req.params.id);
 
-    if (!post) {
-      return res.status(404).json({
-        errorsMessages: [
-          {
-            message: 'Post not found',
-            field: 'id',
-          },
-        ],
-      });
-    }
-
-    res.status(200).json(post);
-  } catch (error) {
-    console.error('❌ Ошибка при получении поста:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+  if (!post) {
+    return res.status(404).json({
+      errorsMessages: [
+        {
+          message: 'Post not found',
+          field: 'id',
+        },
+      ],
+    });
   }
+
+  res.status(200).json(post);
 };
 
 export const createPost = (req: any, res: any) => {
