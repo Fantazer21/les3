@@ -19,8 +19,8 @@ export const getBlogs = async (_req: Request, res: Response) => {
   }
 };
 
-export const getBlogById = async (req: any, res: any) => {
-  const blog = await collections.blogs?.findOne({ id: req.params.id }, { projection: { _id: 0 } });
+export const getBlogById = (req: any, res: any) => {
+  const blog = blogs.find(b => b.id === req.params.id);
 
   if (!blog) {
     return res.status(404).json({
@@ -72,16 +72,16 @@ export const createBlog = async (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  const newBlog: BlogViewModel = {
-    id: new ObjectId(),
-    name,
+  const newBlog = {
     description,
+    id: (blogs.length + 1).toString(),
+    name,
     websiteUrl,
     isMembership: false,
     createdAt: new Date().toISOString(),
   };
 
-  await collections.blogs?.insertOne(newBlog);
+  blogs.push(newBlog);
 
   res.status(201).json(newBlog);
 };
