@@ -19,7 +19,6 @@ export const getBlogs = async (_req: Request, res: Response) => {
 };
 
 export const getBlogById = async (req: any, res: any) => {
-  try {
     const blog = await collections.blogs?.findOne(
       { id: req.params.id },
       { projection: { _id: 0 } },
@@ -37,10 +36,7 @@ export const getBlogById = async (req: any, res: any) => {
     }
 
     res.status(200).json(blog);
-  } catch (error) {
-    console.error('❌ Ошибка при получении блога:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+
 };
 
 export const createBlog = (req: any, res: any) => {
