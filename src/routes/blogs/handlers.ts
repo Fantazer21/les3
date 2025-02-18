@@ -19,21 +19,29 @@ export const getBlogs = async (_req: Request, res: Response) => {
   }
 };
 
-export const getBlogById = (req: any, res: any) => {
-  const blog = blogs.find(b => b.id === req.params.id);
+export const getBlogById = async (req: any, res: any) => {
+  try {
+    const blog = await collections.blogs?.findOne(
+      { id: req.params.id },
+      { projection: { _id: 0 } },
+    );
 
-  if (!blog) {
-    return res.status(404).json({
-      errorsMessages: [
-        {
-          message: 'Blog not found',
-          field: 'id',
-        },
-      ],
-    });
+    if (!blog) {
+      return res.status(404).json({
+        errorsMessages: [
+          {
+            message: 'Blog not found',
+            field: 'id',
+          },
+        ],
+      });
+    }
+
+    res.status(200).json(blog);
+  } catch (error) {
+    console.error('❌ Ошибка при получении блога:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  res.status(200).json(blog);
 };
 
 export const createBlog = async (req: any, res: any) => {
