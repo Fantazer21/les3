@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { blogsData } from '../../mocks/blogs.mock';
 import { collections } from '../../db/connectionDB';
+import { ObjectId } from 'mongodb';
 
 const blogs: BlogViewModel[] = blogsData;
 
@@ -19,10 +20,7 @@ export const getBlogs = async (_req: Request, res: Response) => {
 };
 
 export const getBlogById = async (req: any, res: any) => {
-  const blog = await collections.blogs?.findOne(
-      { id: req.params.id },
-      { projection: { _id: 0 } },
-  );
+  const blog = await collections.blogs?.findOne({ id: req.params.id }, { projection: { _id: 0 } });
 
   if (!blog) {
     return res.status(404).json({
@@ -38,7 +36,7 @@ export const getBlogById = async (req: any, res: any) => {
   res.status(200).json(blog);
 };
 
-export const createBlog = (req: any, res: any) => {
+export const createBlog = async (req: any, res: any) => {
   const { name, description, websiteUrl } = req.body;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
@@ -74,16 +72,16 @@ export const createBlog = (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  const newBlog = {
-    description,
-    id: (blogs.length + 1).toString(),
+  const newBlog: BlogViewModel = {
+    id: new ObjectId(),
     name,
+    description,
     websiteUrl,
     isMembership: false,
     createdAt: new Date().toISOString(),
   };
 
-  blogs.push(newBlog);
+  await collections.blogs?.insertOne(newBlog);
 
   res.status(201).json(newBlog);
 };
