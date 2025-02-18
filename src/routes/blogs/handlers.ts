@@ -21,24 +21,17 @@ export const getBlogById = async (req: any, res: any) => {
   try {
     console.log('🔍 Поиск блога по id:', req.params.id);
 
-    const allBlogs = await collections.blogs?.find({}).toArray();
-
     const blog = await collections.blogs?.findOne(
-      { id: req.params.id },
-      { projection: { _id: 0 } },
-    );
+      { id: req.params.id }, 
+      { projection: { _id: 0 } }, 
 
     if (!blog) {
       return res.status(404).json({
-        errorsMessages: [
-          {
-            message: 'Blog not found',
-            field: 'id',
-          },
-        ],
+        errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
     }
 
+    console.log('🎯 Найденный блог:', blog);
     res.status(200).json(blog);
   } catch (error) {
     console.error('❌ Ошибка при получении блога:', error);
