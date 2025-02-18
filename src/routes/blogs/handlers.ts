@@ -22,7 +22,7 @@ export const getBlogs = async (_req: Request, res: Response) => {
 export const getBlogById = async (req: any, res: any) => {
   try {
     const blog = await collections.blogs?.findOne(
-      { id: req.params.id  },
+      { id: req.params.id },
       { projection: { _id: 0 } },
     );
 
@@ -111,7 +111,7 @@ export const createBlog = async (req: any, res: any) => {
   }
 };
 
-export const updateBlog = (req: any, res: any) => {
+export const updateBlog = async (req: any, res: any) => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
@@ -148,33 +148,26 @@ export const updateBlog = (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  const blogIndex = blogs.findIndex(b => b.id === id);
+  try {
+    const result = await collections.blogs?.updateOne(
+      { id },
+      { $set: { name, description, websiteUrl } },
+    );
 
-  if (blogIndex === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: 'Blog not found',
-    });
+    if (!result?.matchedCount) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Blog not found', field: 'id' }],
+      });
+    }
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('❌ Ошибка при обновлении блога:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  const updatedBlog: BlogViewModel = {
-    ...blogs[blogIndex],
-    name,
-    description,
-    websiteUrl,
-  };
-
-  blogs[blogIndex] = updatedBlog;
-
-  const response: ApiResponse<BlogViewModel> = {
-    status: 204,
-    data: updatedBlog,
-  };
-
-  res.sendStatus(204).json(response);
 };
 
-export const deleteBlog = (req: any, res: any) => {
+export const deleteBlog = async (req: any, res: any) => {
   const { id } = req.params;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
@@ -183,15 +176,18 @@ export const deleteBlog = (req: any, res: any) => {
     return res.status(401).json({ status: 401, error: 'Unauthorized' });
   }
 
-  const blogIndex = blogs.findIndex(b => b.id === id);
+  try {
+    const result = await collections.blogs?.deleteOne({ id });
 
-  if (blogIndex === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: 'Blog not found',
-    });
+    if (!result?.deletedCount) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Blog not found', field: 'id' }],
+      });
+    }
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('❌ Ошибка при удалении блога:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  blogs.splice(blogIndex, 1);
-  res.sendStatus(204);
 };
