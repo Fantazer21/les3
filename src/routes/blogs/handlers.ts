@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { collections } from '../../db/connectionDB';
 import { ObjectId } from 'mongodb';
+import { log } from 'console';
 
 const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
@@ -18,6 +19,10 @@ export const getBlogs = async (_req: Request, res: Response) => {
 
 export const getBlogById = async (req: any, res: any) => {
   try {
+    console.log('🔍 Поиск блога по id:', req.params.id);
+
+    const allBlogs = await collections.blogs?.find({}).toArray();
+
     const blog = await collections.blogs?.findOne(
       { id: req.params.id },
       { projection: { _id: 0 } },
