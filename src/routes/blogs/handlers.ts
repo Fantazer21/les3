@@ -22,8 +22,9 @@ export const getBlogById = async (req: any, res: any) => {
     console.log('🔍 Поиск блога по id:', req.params.id);
 
     const blog = await collections.blogs?.findOne(
-      { id: req.params.id }, 
-      { projection: { _id: 0 } }, 
+      { id: req.params.id },
+      { projection: { _id: 0 } },
+    );
 
     if (!blog) {
       return res.status(404).json({
