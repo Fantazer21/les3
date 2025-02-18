@@ -80,22 +80,35 @@ export const createBlog = async (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  const newBlog: BlogViewModel = {
-    id: Date.now().toString(),
-    name,
+  const newBlog = {
     description,
+    id: (blogs.length + 1).toString(),
+    name,
     websiteUrl,
     isMembership: false,
     createdAt: new Date().toISOString(),
   };
 
-  try {
-    await collections.blogs?.insertOne({ ...newBlog, _id: new ObjectId() });
-    res.status(201).json(newBlog);
-  } catch (error) {
-    console.error('❌ Ошибка при создании блога:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+  blogs.push(newBlog);
+
+  res.status(201).json(newBlog);
+
+  // const newBlog: BlogViewModel = {
+  //   id: Date.now().toString(),
+  //   name,
+  //   description,
+  //   websiteUrl,
+  //   isMembership: false,
+  //   createdAt: new Date().toISOString(),
+  // };
+
+  // try {
+  //   await collections.blogs?.insertOne({ ...newBlog, _id: new ObjectId() });
+  //   res.status(201).json(newBlog);
+  // } catch (error) {
+  //   console.error('❌ Ошибка при создании блога:', error);
+  //   res.status(500).json({ message: 'Internal Server Error' });
+  // }
 };
 
 export const updateBlog = (req: any, res: any) => {
