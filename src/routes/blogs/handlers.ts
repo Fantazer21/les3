@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
-import { blogsData } from '../../mocks/blogs.mock';
 import { collections } from '../../db/connectionDB';
 import { ObjectId } from 'mongodb';
-
-const blogs: BlogViewModel[] = blogsData;
 
 const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
@@ -80,19 +77,6 @@ export const createBlog = async (req: any, res: any) => {
     return res.status(400).json(errors);
   }
 
-  // const newBlog = {
-  //   description,
-  //   id: (blogs.length + 1).toString(),
-  //   name,
-  //   websiteUrl,
-  //   isMembership: false,
-  //   createdAt: new Date().toISOString(),
-  // };
-  //
-  // blogs.push(newBlog);
-  //
-  // res.status(201).json(newBlog);
-
   const newBlog: BlogViewModel = {
     id: Date.now().toString(),
     name,
@@ -104,6 +88,7 @@ export const createBlog = async (req: any, res: any) => {
 
   try {
     await collections.blogs?.insertOne({ ...newBlog, _id: new ObjectId() });
+    console.log('✅ Блог создан:', newBlog);
     res.status(201).json(newBlog);
   } catch (error) {
     console.error('❌ Ошибка при создании блога:', error);
