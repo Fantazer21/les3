@@ -78,7 +78,7 @@ export const createBlog = async (req: any, res: any) => {
   }
 
   const newBlog: BlogViewModel = {
-    id: Date.now().toString(),
+    id: req.body.id || Date.now().toString(),
     name,
     description,
     websiteUrl,
