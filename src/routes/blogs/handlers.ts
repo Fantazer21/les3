@@ -76,13 +76,14 @@ export const createBlog: RequestHandler = async (req: Request, res: Response): P
   }
 
   const newBlog: BlogViewModel = {
-    id: req.body.id || Date.now().toString(),
+    id: new ObjectId().toString(),
     name,
     description,
     websiteUrl,
     isMembership: false,
     createdAt: new Date().toISOString(),
   };
+
 
   try {
     await collections.blogs?.insertOne({ ...newBlog, _id: new ObjectId() });
