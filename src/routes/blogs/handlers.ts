@@ -9,7 +9,7 @@ const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]
 export const getBlogs = async (_req: Request, res: Response) => {
   try {
     const blogs = await collections.blogs?.find({}, { projection: { _id: 0 } }).toArray();
-    console.log('📊 Полученные блоги:', blogs);
+
     res.status(200).json(blogs);
   } catch (error) {
     console.error('❌ Ошибка при получении блогов:', error);

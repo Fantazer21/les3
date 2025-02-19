@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
-import { PostViewModel, ApiResponse, ErrorResponse } from '../../types';
-import { postsData } from '../../mocks/posts.mock';
-import { blogsData } from '../../mocks/blogs.mock';
+import { PostViewModel } from '../../types';
 import { collections } from '../../db/connectionDB';
-
-const posts: PostViewModel[] = postsData;
+import { ObjectId } from 'mongodb';
 
 export const getPosts = async (_req: Request, res: Response) => {
   try {
     const posts = await collections.posts?.find({}, { projection: { _id: 0 } }).toArray();
-
     res.status(200).json(posts);
   } catch (error) {
     console.error('❌ Ошибка при получении постов:', error);
@@ -17,24 +13,27 @@ export const getPosts = async (_req: Request, res: Response) => {
   }
 };
 
-export const getPostById = (req: any, res: any) => {
-  const post = posts.find(p => p.id === req.params.id);
+export const getPostById = async (req: any, res: any) => {
+  try {
+    const post = await collections.posts?.findOne(
+      { id: req.params.id },
+      { projection: { _id: 0 } },
+    );
 
-  if (!post) {
-    return res.status(404).json({
-      errorsMessages: [
-        {
-          message: 'Post not found',
-          field: 'id',
-        },
-      ],
-    });
+    if (!post) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Post not found', field: 'id' }],
+      });
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error('❌ Ошибка при получении поста:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  res.status(200).json(post);
 };
 
-export const createPost = (req: any, res: any) => {
+export const createPost = async (req: any, res: any) => {
   const { title, shortDescription, content, blogId } = req.body;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
@@ -68,34 +67,39 @@ export const createPost = (req: any, res: any) => {
     });
   }
 
-  const blog = blogsData.find(b => b.id === blogId);
-  if (!blog) {
-    errors.errorsMessages.push({
-      message: 'Blog not found',
-      field: 'blogId',
-    });
-  }
+  const blog = await collections.blogs?.findOne({ id: blogId }, { projection: { _id: 0 } });
+  // if (!blog) {
+  //   errors.errorsMessages.push({
+  //     message: 'Blog not found',
+  //     field: 'blogId',
+  //   });
+  // }
 
   if (errors.errorsMessages.length) {
     return res.status(400).json(errors);
   }
 
   const newPost: PostViewModel = {
-    id: (posts.length + 1).toString(),
+    id: req.body.id || Date.now().toString(),
     title,
     shortDescription,
     content,
     blogId,
     blogName: blog?.name || 'Unknown Blog',
     createdAt: new Date().toISOString(),
+    isMembership: false,
   };
 
-  posts.push(newPost);
-
-  res.status(201).json(newPost);
+  try {
+    await collections.posts?.insertOne({ ...newPost, _id: new ObjectId() });
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error('❌ Ошибка при создании поста:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
-export const updatePost = (req: any, res: any) => {
+export const updatePost = async (req: any, res: any) => {
   const { id } = req.params;
   const { title, shortDescription, content, blogId } = req.body;
 
@@ -130,45 +134,46 @@ export const updatePost = (req: any, res: any) => {
     });
   }
 
-  const blog = blogsData.find(b => b.id === blogId);
-  if (!blog) {
-    errors.errorsMessages.push({
-      message: 'Blog not found',
-      field: 'blogId',
-    });
-  }
+  const blog = await collections.blogs?.findOne({ id: blogId }, { projection: { _id: 0 } });
+  // if (!blog) {
+  //   errors.errorsMessages.push({
+  //     message: 'Blog not found',
+  //     field: 'blogId',
+  //   });
+  // }
 
   if (errors.errorsMessages.length) {
     return res.status(400).json(errors);
   }
 
-  const postIndex = posts.findIndex(p => p.id === id);
-
-  if (postIndex === -1) {
-    return res.status(404).json({
-      errorsMessages: [
-        {
-          message: 'Post not found',
-          field: 'id',
+  try {
+    const result = await collections.posts?.updateOne(
+      { id },
+      {
+        $set: {
+          title,
+          shortDescription,
+          content,
+          blogId,
+          blogName: blog?.name || 'Unknown Blog',
         },
-      ],
-    });
+      },
+    );
+
+    if (!result?.matchedCount) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Post not found', field: 'id' }],
+      });
+    }
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('❌ Ошибка при обновлении поста:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  const updatedPost = {
-    ...posts[postIndex],
-    title,
-    shortDescription,
-    content,
-    blogId,
-    blogName: blog?.name || 'Unknown Blog',
-  };
-
-  posts[postIndex] = updatedPost;
-  return res.sendStatus(204);
 };
 
-export const deletePost = (req: any, res: any) => {
+export const deletePost = async (req: any, res: any) => {
   const { id } = req.params;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
@@ -177,19 +182,18 @@ export const deletePost = (req: any, res: any) => {
     return res.sendStatus(401);
   }
 
-  const postIndex = posts.findIndex(p => p.id === id);
+  try {
+    const result = await collections.posts?.deleteOne({ id });
 
-  if (postIndex === -1) {
-    return res.status(404).json({
-      errorsMessages: [
-        {
-          message: 'Post not found',
-          field: 'id',
-        },
-      ],
-    });
+    if (!result?.deletedCount) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Post not found', field: 'id' }],
+      });
+    }
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('❌ Ошибка при удалении поста:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  posts.splice(postIndex, 1);
-  res.sendStatus(204);
 };
