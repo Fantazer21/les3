@@ -23,9 +23,10 @@ export const getBlogById: RequestHandler = async (req: any, res: any) => {
     );
 
     if (!blog) {
-      return res.status(404).json({
+       res.status(404).json({
         errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
+      return
     }
 
     res.status(200).json(blog);
