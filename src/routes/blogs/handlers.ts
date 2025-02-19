@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, RequestHandler } from 'express';
 import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
 import { collections } from '../../db/connectionDB';
 import { ObjectId } from 'mongodb';
@@ -6,10 +6,9 @@ import { log } from 'console';
 
 const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-export const getBlogs = async (_req: Request, res: Response) => {
+export const getBlogs: RequestHandler = async (req: Request, res: Response) => {
   try {
     const blogs = await collections.blogs?.find({}, { projection: { _id: 0 } }).toArray();
-
     res.status(200).json(blogs);
   } catch (error) {
     console.error('❌ Ошибка при получении блогов:', error);
@@ -17,22 +16,20 @@ export const getBlogs = async (_req: Request, res: Response) => {
   }
 };
 
-export const getBlogById = async (req: any, res: any) => {
+export const getBlogById: RequestHandler = async (req: Request, res: Response) => {
   try {
-    console.log('🔍 Поиск блога по id:', req.params.id);
-
     const blog = await collections.blogs?.findOne(
       { id: req.params.id },
       { projection: { _id: 0 } },
     );
 
     if (!blog) {
-      return res.status(404).json({
+      res.status(404).json({
         errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
+      return;
     }
 
-    console.log('🎯 Найденный блог:', blog);
     res.status(200).json(blog);
   } catch (error) {
     console.error('❌ Ошибка при получении блога:', error);
@@ -40,13 +37,14 @@ export const getBlogById = async (req: any, res: any) => {
   }
 };
 
-export const createBlog = async (req: any, res: any) => {
+export const createBlog: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { name, description, websiteUrl } = req.body;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
-    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+    res.status(401).json({ status: 401, error: 'Unauthorized' });
+    return;
   }
 
   const errors = {
@@ -73,7 +71,8 @@ export const createBlog = async (req: any, res: any) => {
   }
 
   if (errors.errorsMessages.length) {
-    return res.status(400).json(errors);
+    res.status(400).json(errors);
+    return;
   }
 
   const newBlog: BlogViewModel = {
@@ -95,14 +94,15 @@ export const createBlog = async (req: any, res: any) => {
   }
 };
 
-export const updateBlog = async (req: any, res: any) => {
+export const updateBlog: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, description, websiteUrl } = req.body;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
-    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+    res.status(401).json({ status: 401, error: 'Unauthorized' });
+    return;
   }
 
   const errors = {
@@ -129,7 +129,8 @@ export const updateBlog = async (req: any, res: any) => {
   }
 
   if (errors.errorsMessages.length) {
-    return res.status(400).json(errors);
+    res.status(400).json(errors);
+    return;
   }
 
   try {
@@ -139,39 +140,40 @@ export const updateBlog = async (req: any, res: any) => {
     );
 
     if (!result?.matchedCount) {
-      return res.status(404).json({
+      res.status(404).json({
         errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
+      return;
     }
 
     res.sendStatus(204);
   } catch (error) {
-    console.error('❌ Ошибка при обновлении блога:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
-export const deleteBlog = async (req: any, res: any) => {
+export const deleteBlog: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   const checkToken = `Basic ${btoa('admin:qwerty')}`;
 
   if (!req.headers || !req.headers.authorization || req.headers.authorization !== checkToken) {
-    return res.status(401).json({ status: 401, error: 'Unauthorized' });
+    res.status(401).json({ status: 401, error: 'Unauthorized' });
+    return;
   }
 
   try {
     const result = await collections.blogs?.deleteOne({ id });
 
     if (!result?.deletedCount) {
-      return res.status(404).json({
+      res.status(404).json({
         errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
+      return;
     }
 
     res.sendStatus(204);
   } catch (error) {
-    console.error('❌ Ошибка при удалении блога:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

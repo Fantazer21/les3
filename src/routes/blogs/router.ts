@@ -5,7 +5,7 @@ import { ApiPaths } from '../paths';
 export const blogsRouter = Router();
 
 blogsRouter.get(ApiPaths.Blogs, getBlogs);
-blogsRouter.post(ApiPaths.Blogs, createBlog as RequestHandler);
+blogsRouter.post(ApiPaths.Blogs, createBlog);
 blogsRouter.get(ApiPaths.BlogById, getBlogById);
 blogsRouter.put(ApiPaths.BlogById, updateBlog);
 blogsRouter.delete(ApiPaths.BlogById, deleteBlog);
