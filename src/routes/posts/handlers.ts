@@ -68,12 +68,12 @@ export const createPost = async (req: any, res: any) => {
   }
 
   const blog = await collections.blogs?.findOne({ id: blogId }, { projection: { _id: 0 } });
-  // if (!blog) {
-  //   errors.errorsMessages.push({
-  //     message: 'Blog not found',
-  //     field: 'blogId',
-  //   });
-  // }
+  if (!blog) {
+    errors.errorsMessages.push({
+      message: 'Blog not found',
+      field: 'blogId',
+    });
+  }
 
   if (errors.errorsMessages.length) {
     return res.status(400).json(errors);
