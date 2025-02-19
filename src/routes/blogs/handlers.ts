@@ -1,8 +1,7 @@
 import { Request, Response, RequestHandler } from 'express';
-import { BlogViewModel, ApiResponse, ErrorResponse } from '../../types';
+import { BlogViewModel } from '../../types';
 import { collections } from '../../db/connectionDB';
 import { ObjectId } from 'mongodb';
-import { log } from 'console';
 
 const urlPattern = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
@@ -16,7 +15,7 @@ export const getBlogs: RequestHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const getBlogById: RequestHandler = async (req: Request, res: Response) => {
+export const getBlogById: RequestHandler = async (req: any, res: any) => {
   try {
     const blog = await collections.blogs?.findOne(
       { id: req.params.id },
@@ -24,10 +23,9 @@ export const getBlogById: RequestHandler = async (req: Request, res: Response) =
     );
 
     if (!blog) {
-      res.status(404).json({
+      return res.status(404).json({
         errorsMessages: [{ message: 'Blog not found', field: 'id' }],
       });
-      return;
     }
 
     res.status(200).json(blog);
